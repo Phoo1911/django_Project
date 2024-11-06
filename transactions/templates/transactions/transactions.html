@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Transaction</title>
+</head>
+<body>
+    <h1>Update Transaction</h1>
+
+    <form action="{% url 'update_transaction' transaction.id %}" method="post">
+        {% csrf_token %}
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" value="{{ transaction.amount }}" required step="0.01"><br>
+        <label for="type">Type:</label>
+        <select id="type" name="type" required>
+            <option value="credit" {% if transaction.transaction_type == 'credit' %}selected{% endif %}>Credit</option>
+            <option value="debit" {% if transaction.transaction_type == 'debit' %}selected{% endif %}>Debit</option>
+        </select><br>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description">{{ transaction.description }}</textarea><br>
+        <button type="submit">Update Transaction</button>
+    </form>
+
+    <a href="{% url 'transactions_page' %}">Back to Transactions</a>
+</body>
+</html>
