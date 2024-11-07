@@ -1,27 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Transaction</title>
+    <title>Transaction Management</title>
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #444;
+            margin-top: 30px;
+        }
+        form {
+            margin-bottom: 15px;
+            padding: 7px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        input, select {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: calc(33% - 22px);
+        }
+        button {
+            padding: 7px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .delete-button {
+            background-color: #dc3545;
+        }
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
-    <h1>Update Transaction</h1>
-
-    <form action="{% url 'update_transaction' transaction.id %}" method="post">
+<h1>Transaction Management</h1>
+    <h2>Add Transaction</h2>
+    <form method="POST" action="{% url 'add_transaction' %}">
         {% csrf_token %}
-        <label for="amount">Amount:</label>
-        <input type="number" id="amount" name="amount" value="{{ transaction.amount }}" required step="0.01"><br>
-        <label for="type">Type:</label>
-        <select id="type" name="type" required>
-            <option value="credit" {% if transaction.transaction_type == 'credit' %}selected{% endif %}>Credit</option>
-            <option value="debit" {% if transaction.transaction_type == 'debit' %}selected{% endif %}>Debit</option>
-        </select><br>
-        <label for="description">Description:</label>
-        <textarea id="description" name="description">{{ transaction.description }}</textarea><br>
-        <button type="submit">Update Transaction</button>
+        <input type="number" name="transaction_amount" required placeholder="Enter transaction amount" step="0.01" min="0">
+        <select name="transaction_type" required>
+            <option value="" disabled selected>Select transaction type</option>
+            <option value="Income">Income</option>
+            <option value="Expense">Expense</option>
+            <input type="text" name="transaction_description" required placeholder="Enter transaction description">
+        </select>
+        <button type="submit">Add</button>
     </form>
-
-    <a href="{% url 'transactions_page' %}">Back to Transactions</a>
 </body>
 </html>
+
+
+    <h2>Your Transactions</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Amount</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.description }}</td>
+                    <td>{{ transaction.amount }}</td>
+                    <td>{{ transaction.type }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'delete_transaction' forloop.counter0 %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="delete-button">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No transactions found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
